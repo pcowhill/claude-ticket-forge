@@ -14,6 +14,13 @@ The output is not chatbot prose. It is a structured ticket where **every field c
 
 React + TypeScript + Vite frontend · Node/Express backend · Zod runtime validation · Vitest unit tests · Playwright E2E. No database (localStorage persistence), no auth, no live issue-tracker integrations — export only.
 
+## Hosted demo
+
+A static build is published at **https://pcowhill.github.io/claude-ticket-forge/**.
+**Scripted Demo Mode** and **Mock AI Mode** run entirely in the browser there.
+**Live AI Mode** needs the Express backend (and an API key), so it is unavailable
+on the hosted site — clone the repository and run it locally as described below.
+
 ## Run locally
 
 ```bash
