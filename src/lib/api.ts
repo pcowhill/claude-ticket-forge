@@ -9,6 +9,17 @@ import {
 
 // Frontend client for the Express backend (Live AI Mode only).
 
+/**
+ * The GitHub Pages build (.github/workflows/deploy-pages.yml) sets
+ * VITE_STATIC_DEPLOY=1. A static site has no backend, so Live AI Mode is
+ * reported as unavailable with an explanation instead of a failed request.
+ * Scripted Demo Mode and Mock AI Mode run entirely in the browser.
+ */
+export const STATIC_DEPLOY = import.meta.env.VITE_STATIC_DEPLOY === '1'
+
+export const STATIC_DEPLOY_DETAIL =
+  'Live AI is not available on this hosted demo (no backend behind a static site). Clone the repo and run `npm run dev` with an API key to use it.'
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -19,6 +30,7 @@ export class ApiError extends Error {
 }
 
 async function post<T>(path: string, body: unknown): Promise<T> {
+  if (STATIC_DEPLOY) throw new ApiError(STATIC_DEPLOY_DETAIL, 'static_deploy')
   let res: Response
   try {
     res = await fetch(path, {
@@ -37,6 +49,9 @@ async function post<T>(path: string, body: unknown): Promise<T> {
 }
 
 export async function fetchAiStatus(): Promise<AiStatus> {
+  if (STATIC_DEPLOY) {
+    return { available: false, provider: null, model: null, detail: STATIC_DEPLOY_DETAIL }
+  }
   try {
     const res = await fetch('/api/ai/status')
     if (!res.ok) throw new Error()
